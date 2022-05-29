@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_app/_constants.dart';
+import 'package:movie_app/auth/authentication.dart';
 import 'package:movie_app/screens/home/components/_coming_soon_card.dart';
 import 'package:movie_app/screens/home/components/_commerical_movie_card.dart';
 import 'package:movie_app/screens/home/components/_custom_divider.dart';
@@ -9,28 +10,31 @@ import 'package:movie_app/utils/_now_paying_db.dart';
 import 'package:movie_app/utils/_upcoming_movies_db.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key? key, required this.auth, required this.logoutCallback})
+      : super(key: key);
+
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
   int selectedItem = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: themeColor,
-       bottomNavigationBar: Row(
-              children: <Widget>[
-                buildNavBarItem(Icons.movie, 0),
-                buildNavBarItem(Icons.closed_caption, 1),
-                buildNavBarItem(Icons.animation, 2),
-                buildNavBarItem(Icons.person, 3),
-              ],
-            ),
+      bottomNavigationBar: Row(
+        children: <Widget>[
+          buildNavBarItem(Icons.movie, 0),
+          buildNavBarItem(Icons.closed_caption, 1),
+          buildNavBarItem(Icons.animation, 2),
+          buildNavBarItem(Icons.person, 3),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -42,13 +46,19 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      CustomIconButton(icon: Icons.where_to_vote, title: 'CMB'),
-                      Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                    children: [
+                      CustomIconButton(
+                        icon: Icons.where_to_vote,
+                        title: 'CMB',
+                        press: () {},
+                      ),
+                      const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5)),
                       Expanded(
                         child: CustomIconButton(
                           icon: Icons.search,
                           title: 'Search for movie...',
+                          press: () {},
                         ),
                       ),
                     ]),
@@ -64,7 +74,8 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     DefaultTextStyle(
                       style: GoogleFonts.poppins(
-                            fontSize: defaultPadding * 1.75, color: backgroundColor),
+                          fontSize: defaultPadding * 1.75,
+                          color: backgroundColor),
                       child: const Text(
                         "Coming Soon",
                       ),
@@ -116,10 +127,10 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: defaultPadding),
                             child: DefaultTextStyle(
-                               style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  color: shadedTextColor,
-                                ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                color: shadedTextColor,
+                              ),
                               child: const Text(
                                 'March 2023',
                               ),
@@ -155,6 +166,9 @@ class _HomeState extends State<Home> {
         setState(() {
           selectedItem = index;
         });
+        if (selectedItem == 3) {
+          widget.logoutCallback();
+        }
       },
       child: Container(
         height: 60,

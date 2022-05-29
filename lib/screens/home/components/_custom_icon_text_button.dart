@@ -3,15 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_app/_constants.dart';
 
 class CustomIconButton extends StatelessWidget {
-  const CustomIconButton({Key? key, required this.icon, required this.title}) : super(key: key);
+  const CustomIconButton({Key? key, required this.icon, required this.title, required this.press})
+      : super(key: key);
 
   final IconData icon;
   final String title;
+  final Function press;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () => press,
         style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(
                 horizontal: defaultPadding / 2, vertical: defaultPadding * 0.4),
